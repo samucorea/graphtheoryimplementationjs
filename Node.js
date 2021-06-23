@@ -2,15 +2,16 @@ class Node {
     x;
     y;
     radius;
-    fillStyle;
-    strokeStyle;
+    fillStyle = '#22cccc'
+    strokeStyle = '#009999'
+    selectedFill = '#88aaaa'
+    selected = false
 
-    constructor(x, y, radius, fillStyle, strokeStyle) {
+    constructor(x, y, radius) {
         this.x = x
         this.y = y
         this.radius = radius
-        this.fillStyle = fillStyle;
-        this.strokeStyle = strokeStyle;
+
     }
 }
 

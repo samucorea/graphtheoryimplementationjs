@@ -2,7 +2,6 @@ import Node from './Node.js'
 
 
 const canvas = document.querySelector('canvas')
-const p = document.querySelector('.hey')
 const context = canvas.getContext('2d')
 
 let nodes = []
@@ -13,23 +12,23 @@ canvas.height = 600;
 canvas.style.border = '1px solid black';
 
 
-function drawNode(node) {
-    context.beginPath();
-    context.fillStyle = node.fillStyle
-    context.arc(node.x, node.y, node.radius, 0, Math.PI * 2, true);
-    context.strokeStyle = node.strokeStyle;
-    context.stroke();
-    context.fill();
+function draw() {
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    for (let i = 0; i < nodes.length; i++) {
+        let node = nodes[i];
+        context.beginPath();
+        context.fillStyle = node.selected ? node.selectedFill : node.fillStyle;
+        context.arc(node.x, node.y, node.radius, 0, Math.PI * 2, true);
+        context.strokeStyle = node.strokeStyle;
+        context.fill();
+        context.stroke();
+        context.font = '18px Arial'
+        context.textAlign = 'center'
+        context.fillText(`v${i + 1}`, node.x, node.y + (node.radius * 3))
+    }
 }
 
-function clickCanvas(e) {
 
-    const node = new Node(e.offsetX, e.offsetY, 10, '#22cccc', '#009999')
-
-
-    nodes.push(node)
-    drawNode(node);
-}
 
 let selection = undefined;
 
@@ -43,25 +42,41 @@ function within(x, y) {
 }
 
 function move(e) {
-    if (selection) {
+    if (selection && e.buttons) {
         selection.x = e.offsetX;
         selection.y = e.offsetY;
-        drawNode(selection);
+        selection.moving = true;
+        draw();
     }
 }
 
 function down(e) {
     let target = within(e.offsetX, e.offsetY);
+
+    if (selection && selection.selected) {
+        selection.selected = false;
+    }
     if (target) {
         selection = target;
+        selection.selected = true
+        draw()
     }
 }
 
 function up(e) {
-    selection = undefined;
+
+    if (!selection) {
+        const node = new Node(e.offsetX, e.offsetY, 10)
+        nodes.push(node);
+        draw();
+    }
+    if (selection && !selection.selected) {
+        selection = undefined;
+    }
+    draw();
 }
 
-canvas.addEventListener('click', clickCanvas)
+// canvas.addEventListener('click', clickCanvas)
 canvas.addEventListener('mousemove', move);
 canvas.addEventListener('mousedown', down);
 canvas.addEventListener('mouseup', up)
