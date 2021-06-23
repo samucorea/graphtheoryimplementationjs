@@ -3,6 +3,7 @@ import Edge from './Edge.js'
 
 
 const canvas = document.querySelector('canvas')
+const kruskalBtn = document.getElementById('kruskalBtn')
 const context = canvas.getContext('2d')
 
 
@@ -13,20 +14,28 @@ canvas.height = 600;
 canvas.style.border = '1px solid black';
 
 const nodes = []
-const edges = []
+let edges = []
 
 
 function draw() {
     context.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     for (let i = 0; i < edges.length; i++) {
-        let fromNode = edges[i].from;
-        let toNode = edges[i].to;
+        const edge = edges[i]
+        let fromNode = edge.from;
+        let toNode = edge.to;
         context.beginPath();
         context.strokeStyle = fromNode.strokeStyle;
         context.moveTo(fromNode.x, fromNode.y);
         context.lineTo(toNode.x, toNode.y);
         context.stroke();
+
+        //Text
+        const middleX = (fromNode.x + toNode.x) / 2
+        const middleY = (fromNode.y + toNode.y) / 2
+        context.font = '18px Arial'
+        context.fillText(edge.weight, middleX + 10, middleY + 15)
+        context.fillText(`e${i + 1}`, middleX - 10, middleY - 15)
     }
 
     for (let i = 0; i < nodes.length; i++) {
@@ -41,6 +50,20 @@ function draw() {
         context.textAlign = 'center'
         context.fillText(`v${i + 1}`, node.x, node.y + (node.radius * 3))
     }
+}
+
+function edgeExists(S, T) {
+    for (let i = 0; i < edges.length; i++) {
+        const Sprime = JSON.stringify(edges[i].from)
+        const Tprime = JSON.stringify(edges[i].to)
+
+        if ((S == Sprime && T == Tprime) || (T == Sprime && S == Tprime)) {
+            return true;
+        }
+
+    }
+
+    return false;
 }
 
 
@@ -75,9 +98,17 @@ function down(e) {
 
     if (target) {
         if (selection && selection !== target) {
-            const edge = new Edge(selection, target);
+            if (!edgeExists(JSON.stringify(selection), JSON.stringify(target))) {
+                const weight = parseInt(prompt("Inserte peso de arista"))
+                const edge = new Edge(selection, target, weight);
 
-            edges.push(edge);
+                edges.push(edge);
+                selection = undefined;
+                draw()
+                return;
+            }
+
+
         }
         selection = target;
         selection.selected = true
@@ -98,8 +129,66 @@ function up(e) {
     draw();
 }
 
-// canvas.addEventListener('click', clickCanvas)
+function createsCircuit(newEdge, currentEdges) {
+    const dict = {}
+    const edgesWithNewEdge = [...currentEdges, newEdge]
+    edgesWithNewEdge.forEach(edge => {
+        if (!dict.hasOwnProperty([edge.from.x, edge.from.y])) {
+            dict[[edge.from.x, edge.from.y]] = 1;
+
+        }
+
+        if (!dict.hasOwnProperty([edge.to.x, edge.to.y])) {
+            dict[[edge.to.x, edge.to.y]] = 1;
+
+        }
+
+
+    })
+
+    return Object.keys(dict).length - 1 !== edgesWithNewEdge.length;
+
+    // currentEdges.forEach(edge => {
+    //     if (edge.from == newEdge.from || edge.to == newEdge.to || edge.from == newEdge.to || edge.to == newEdge.from) {
+    //         counter++;
+    //     }
+    // })
+
+    // return counter > 1
+}
+
+function Kruskal(edges) {
+    console.log(edges)
+    const edgesSorted = edges.sort((a, b) => (a.weight > b.weight) ? 1 : -1)
+    console.log(edgesSorted.length)
+
+    const newEdges = []
+    const n = nodes.length
+
+
+
+    let m = 0
+
+    while (m < n - 1) {
+        const edgeLessWeight = edgesSorted.shift()
+
+        if (!createsCircuit(edgeLessWeight, newEdges)) {
+            newEdges.push(edgeLessWeight)
+
+        }
+        m += 1;
+
+    }
+
+    return newEdges
+}
+
 canvas.addEventListener('mousemove', move);
 canvas.addEventListener('mousedown', down);
 canvas.addEventListener('mouseup', up)
+
+kruskalBtn.addEventListener('click', () => {
+    edges = Kruskal(edges)
+    draw()
+})
 

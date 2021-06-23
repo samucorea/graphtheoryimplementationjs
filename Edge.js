@@ -1,6 +1,9 @@
-function Edge(from, to) {
-    this.from = from
-    this.to = to
+class Edge {
+    constructor(from, to, weight) {
+        this.from = from
+        this.to = to
+        this.weight = weight
+    }
 }
 
 export default Edge
