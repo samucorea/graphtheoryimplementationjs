@@ -1,19 +1,34 @@
 import Node from './Node.js'
+import Edge from './Edge.js'
 
 
 const canvas = document.querySelector('canvas')
 const context = canvas.getContext('2d')
 
-let nodes = []
+
 
 canvas.width = 600;
 canvas.height = 600;
 
 canvas.style.border = '1px solid black';
 
+const nodes = []
+const edges = []
+
 
 function draw() {
     context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    for (let i = 0; i < edges.length; i++) {
+        let fromNode = edges[i].from;
+        let toNode = edges[i].to;
+        context.beginPath();
+        context.strokeStyle = fromNode.strokeStyle;
+        context.moveTo(fromNode.x, fromNode.y);
+        context.lineTo(toNode.x, toNode.y);
+        context.stroke();
+    }
+
     for (let i = 0; i < nodes.length; i++) {
         let node = nodes[i];
         context.beginPath();
@@ -56,7 +71,14 @@ function down(e) {
     if (selection && selection.selected) {
         selection.selected = false;
     }
+
+
     if (target) {
+        if (selection && selection !== target) {
+            const edge = new Edge(selection, target);
+
+            edges.push(edge);
+        }
         selection = target;
         selection.selected = true
         draw()
