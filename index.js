@@ -108,7 +108,7 @@ function down(e) {
                 const weight = parseInt(prompt("Inserte peso de arista"))
                 const edge = new Edge(selection, target, weight);
 
-                console.log(selection, target)
+
 
                 if (adj[target.number] == undefined) {
                     adj[target.number] = []
@@ -122,7 +122,7 @@ function down(e) {
                 adj[target.number].push(selection.number)
                 adj[selection.number].push(target.number)
 
-                console.log(adj)
+
 
 
 
@@ -162,21 +162,13 @@ canvas.addEventListener('mouseup', up)
 
 function Kruskal(nodes, edges) {
 
-    console.log(isCyclic(nodes))
-
-    return
 
 
     const edgesSorted = edges.sort((a, b) => (a.weight > b.weight) ? 1 : -1)
 
 
     const newEdges = []
-    const newNodes = [...nodes]
-
-    for (const node in newNodes) {
-        newNodes[node].adjacentNodes = []
-    }
-    const n = nodes.length
+    const n = edges.length
 
 
 
@@ -186,10 +178,11 @@ function Kruskal(nodes, edges) {
         const edgeLessWeight = edgesSorted.shift()
 
 
-        if (!createsCircuit(edgeLessWeight, newNodes)) {
+        if (!createsCircuit(edgeLessWeight, nodes)) {
             newEdges.push(edgeLessWeight)
 
         }
+        visited.length = 0;
         m += 1;
 
     }
@@ -232,10 +225,28 @@ function isCyclic(nodes) {
     return false;
 }
 
+function createsCircuit(newEdge, nodes) {
+
+
+    adj[newEdge.to.number].push(newEdge.from.number)
+    adj[newEdge.from.number].push(newEdge.to.number)
+    const cyclic = isCyclic(nodes)
+
+    if (cyclic) {
+        adj[newEdge.to.number].pop();
+        adj[newEdge.from.number].pop();
+    }
+
+    return cyclic
+}
 
 
 kruskalBtn.addEventListener('click', () => {
-    edges = Kruskal(nodes, edges, adj)
+    adj.length = 0
+    for (let i = 0; i < nodes.length; i++) {
+        adj[i] = []
+    }
+    edges = Kruskal(nodes, edges)
     draw()
 })
 
