@@ -108,7 +108,13 @@ function down(e) {
 
             if (!edgeExists(selection, target)) {
                 const weight = parseInt(prompt("Inserte peso de arista"))
+
+                if (isNaN(weight)) {
+                    alert('El peso debe ser un numero')
+                    return;
+                }
                 const edge = new Edge(selection, target, weight);
+
 
 
 
