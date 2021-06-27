@@ -35,6 +35,7 @@ function draw() {
         //Text
         const middleX = (fromNode.x + toNode.x) / 2
         const middleY = (fromNode.y + toNode.y) / 2
+        context.fillStyle = 'black'
         context.font = '18px Arial'
         context.fillText(edge.weight, middleX + 10, middleY + 15)
         context.fillText(`e${i + 1}`, middleX - 10, middleY - 15)
@@ -48,6 +49,7 @@ function draw() {
         context.strokeStyle = node.strokeStyle;
         context.fill();
         context.stroke();
+        context.fillStyle = 'black'
         context.font = '18px Arial'
         context.textAlign = 'center'
         context.fillText(`v${i + 1}`, node.x, node.y + (node.radius * 3))
