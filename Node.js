@@ -2,8 +2,8 @@ class Node {
     x;
     y;
     radius;
-    fillStyle = '#22cccc'
-    strokeStyle = '#009999'
+    fillStyle = '#080842'
+    strokeStyle = ""
     selectedFill = '#88aaaa'
     selected = false
     adjacentNodes = []

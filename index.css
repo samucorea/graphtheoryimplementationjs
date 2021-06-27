@@ -11,21 +11,34 @@ html, body, nav, ul, h1, h2, h3, h4, a, canvas {
     color: var(--text-color);
 }
 html, body {
+    text-align: center;
     font-family: Roboto, -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: var(--root-font-size);
-    background: var(--bg);
-    height: 100%;
-    width: 100%;
+    background-image: url(ruta.jpg);
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+
     overflow: hidden;
 }
-*, body, button, input, select, textarea, canvas {
+body,input, select, textarea, canvas {
+    background-color: white; 
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     outline: 0;
 }
 
+button{
+    margin: 0px;
+    background-color: whitesmoke;
+    background-position: right center;
+    border: none;
+    outline:none;
+    padding-left: 150px;
+    padding-right: 150px;
+}
 
-canvas{
-    margin-left: 100px;
+button:hover {
+    background-color: rgb(162, 159, 143);
 }
