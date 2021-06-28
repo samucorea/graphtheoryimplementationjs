@@ -170,29 +170,20 @@ canvas.addEventListener('mouseup', up)
 
 function Kruskal(nodes, edges) {
 
-
-
     const edgesSorted = edges.sort((a, b) => (a.weight > b.weight) ? 1 : -1)
-
-
     const newEdges = []
-    const n = edges.length
-
-
-
+    const n = nodes.length
     let m = 0
 
-    while (m < n) {
+    while (m < n - 1) {
         const edgeLessWeight = edgesSorted.shift()
 
 
         if (!createsCircuit(edgeLessWeight, nodes)) {
             newEdges.push(edgeLessWeight)
+            m += 1;
 
         }
-        visited.length = 0;
-        m += 1;
-
     }
 
     return newEdges
@@ -220,7 +211,7 @@ function isCyclicUtil(v, visited, parent) {
 }
 
 function isCyclic(nodes) {
-
+    visited.length = 0;
     for (let i = 0; i < nodes.length; i++) {
         if (!visited[i]) {
             if (isCyclicUtil(i, visited, -1)) {
@@ -254,7 +245,15 @@ kruskalBtn.addEventListener('click', () => {
     for (let i = 0; i < nodes.length; i++) {
         adj[i] = []
     }
-    edges = Kruskal(nodes, edges)
+    const oldEdges = edges
+    try {
+        edges = Kruskal(nodes, edges)
+    }
+    catch (err) {
+        console.error(err)
+        edges = oldEdges
+    }
+
     draw()
 })
 
